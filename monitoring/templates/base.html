@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="no-cache" />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('sessions')}}">Sessions table</a>
+        <a class="nav-link active" href="{{ url_for('ha_tracker')}}">Home-assistant tracker</a>
+      </li>
+    </ul>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>{{ title }}</h1>
+      <hr>
+      {% block content %}{% endblock %}
+    </div>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

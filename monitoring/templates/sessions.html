@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <table id="sessions_data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Sessions ID</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Ip</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+        <tr>
+            <td><a href="{{ url_for('session_by_id', session_id=session.sessionId) }}">{{ session.sessionId }}</a></td>
+          <td>{{ session.start }}</td>
+          <td>{{ session.end }}</td>
+          <td>{{ session.ip}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

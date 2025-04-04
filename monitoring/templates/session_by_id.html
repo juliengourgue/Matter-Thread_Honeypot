@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if ha %}
+  <p>The IP of this session also sends TCP packets to <b>Home Assistant</b>.</p>
+  {% endif %}
+
+
+  <table id="auth_data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Success</th>
+        <th>Timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+      <div>
+        <h5>Authentication</h5>
+        {% for auth in auths %}
+          <tr>
+            <td>{{ auth.username }}</td>
+            <td>{{ auth.password }}</td>
+            <td>{{ auth.success }}</td>
+            <td>{{ auth.timestamp}}</td>
+          </tr>
+        {% endfor %}
+      </div>
+
+    </tbody>
+  </table>
+
+  <table id="inputs_data" class="table table-sm">
+    <thead>
+      <tr>
+        <th>Input</th>
+        <th>Success</th>
+        <th>Timestamp</th>
+    </tr>
+    </thead>
+    <tbody>
+      <div>
+        <h5>Inputs</h5>
+        {% for inp in inputs %}
+          <tr>
+            <td><code>{{ inp.input }}</code></td>
+            <td>{{ inp.success }}</td>
+            <td>{{ inp.timestamp }}</td>
+          </tr>
+        {% endfor %}
+      </div>
+
+    </tbody>
+  </table>
+{% endblock %}

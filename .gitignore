@@ -1,0 +1,8 @@
+third_party/
+*/venv
+*/env
+*/__pycache__/
+venv
+*.ova
+*.out
+monitoring/stop_signal.txt

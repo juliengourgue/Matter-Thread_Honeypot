@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 USERNAME="cowrie"
-SOURCE_FOLDER="$GIT_ROOT/config/Cowrie"
+SOURCE_FOLDER="$GIT_ROOT/honeypot/config/Cowrie"
 cd $GIT_ROOT
 
 
@@ -126,11 +126,11 @@ mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME; source $SQL_FILE_PATH;" >
 echo "Database schema imported successfully!"
 
 
-cd $GIT_ROOT/monitoring
+cd $GIT_ROOT/honeypot/monitoring
 echo Creating the monitoring venv...
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt > /dev/null
 
 cd $GIT_ROOT
 

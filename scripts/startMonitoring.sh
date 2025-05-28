@@ -1,4 +1,5 @@
 #!/bin/bash
+# @author  Julien Gourgue
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"

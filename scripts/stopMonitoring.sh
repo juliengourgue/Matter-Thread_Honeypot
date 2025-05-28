@@ -1,4 +1,5 @@
 #!/bin/bash
+# @author  Julien Gourgue
 
 # Stop Flask app
 if [ -f "flask_app_pid.txt" ]; then

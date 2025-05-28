@@ -1,3 +1,4 @@
+# @author  Julien Gourgue
 import mysql.connector
 from mysql.connector import errorcode
 from config import db_pswd

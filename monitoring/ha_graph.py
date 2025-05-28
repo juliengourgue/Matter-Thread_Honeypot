@@ -1,3 +1,4 @@
+# @author  Julien Gourgue
 from datetime import datetime, timedelta
 import csv
 

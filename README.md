@@ -1,3 +1,5 @@
+@author  Julien Gourgue
+
 # MaThPot
 
 This repository is an open-source :honey_pot: honeypot for the Matter over Thread IoT network.

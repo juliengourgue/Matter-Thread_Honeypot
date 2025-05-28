@@ -1,4 +1,5 @@
 #!/bin/bash
+# @author  Julien Gourgue
 
 DB_NAME='cowrie'
 DB_USER='cowrie'

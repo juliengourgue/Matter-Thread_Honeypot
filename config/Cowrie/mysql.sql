@@ -1,3 +1,5 @@
+-- Modified version from https://github.com/cowrie/cowrie
+
 CREATE TABLE IF NOT EXISTS `auth` (
   `id` int(11) NOT NULL auto_increment,
   `session` char(32) NOT NULL,

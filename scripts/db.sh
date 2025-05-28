@@ -4,8 +4,6 @@ DB_NAME='cowrie'
 DB_USER='cowrie'
 MYSQL_HOST='localhost'
 
-
-
 echo "Installing MySQL..."
 sudo apt install mysql-server
 sudo service mysql restart
@@ -21,7 +19,7 @@ if [[ "$dbcreate" == "Y" || "$dbcreate" == "y" ]]; then
     # Create the user and set a password
     sudo mysql -u root -e "CREATE USER IF NOT EXISTS '$DB_USER'@'$MYSQL_HOST' IDENTIFIED BY '$DB_PASSWORD';"
 
-    # Grant privileges (this should not include IDENTIFIED BY)
+    # Grant privileges
     sudo mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'$MYSQL_HOST';"
     sudo mysql -u root -e "GRANT INSERT, SELECT, UPDATE ON $DB_NAME.* TO '$DB_USER'@'$MYSQL_HOST';"
 
@@ -29,5 +27,4 @@ if [[ "$dbcreate" == "Y" || "$dbcreate" == "y" ]]; then
     sudo mysql -u root -e "FLUSH PRIVILEGES;"
 
     echo "WARNING: You need to add the db password in 'config/Cowrie/cowrie.cfg'"
-
 fi

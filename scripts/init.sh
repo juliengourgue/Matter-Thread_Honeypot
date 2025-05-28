@@ -3,9 +3,8 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 USERNAME="cowrie"
-SOURCE_FOLDER="$GIT_ROOT/honeypot/config/Cowrie"
+SOURCE_FOLDER="$GIT_ROOT/config/Cowrie"
 cd $GIT_ROOT
-
 
 read -p "Have you already run db.sh ? [Y|N] " dbcreate
 if [[ "$dbcreate" == "N" || "$dbcreate" == "n" ]]; then
@@ -13,6 +12,7 @@ if [[ "$dbcreate" == "N" || "$dbcreate" == "n" ]]; then
     exit 1
 fi
 
+# Install requirements
 echo "Installing system dependencies for Cowrie..."
 sudo apt-get install git python3-venv libssl-dev libffi-dev build-essential libpython3-dev python3-minimal authbind > /dev/null
 
@@ -26,7 +26,6 @@ else
     echo "Creating a Cowrie non-root user..."
     sudo adduser --disabled-password --gecos "" "$USERNAME"
 fi
-
 COWRIE_HOME=$(eval echo ~"$USERNAME")
 
 # Check if the user's home directory exists
@@ -35,7 +34,7 @@ if [ ! -d "$COWRIE_HOME" ]; then
     exit 1
 fi
 
-
+# Clone the Cowrie Repository
 cd $SOURCE_FOLDER
 if [ ! -d "cowrie" ]; then
     echo "Cloning Cowrie repository..."
@@ -46,7 +45,7 @@ cp "userdb.txt" "cowrie.cfg" "cowrie/etc/"
 
 cd $GIT_ROOT
 
-# Function to move files and set ownership
+# Move the Cowrie file function and set permision
 move_files_and_set_permissions() {
     # Ensure the target directory exists
     mkdir -p "$COWRIE_HOME"
@@ -65,41 +64,36 @@ move_files_and_set_permissions() {
 
 }
 
+# Move file to the cowrie User
 if sudo [ -d "$COWRIE_HOME/cowrie/" ]; then
     echo "WARNING: $COWRIE_HOME/cowrie/ already exists!"
     read -p "Do you want to recreate it? [Y|N] " recreate
     if [[ "$recreate" == "Y" || "$recreate" == "y" ]]; then
         echo "Recreating $COWRIE_HOME/cowrie/..."
 
-        # Remove the existing cowrie directory
         sudo rm -rf "$COWRIE_HOME/cowrie"
 
-        # Move the files and set the ownership
         move_files_and_set_permissions
     else
         echo "Skipping recreation of $COWRIE_HOME/cowrie/"
     fi
 else
-    # If the directory doesn't exist, move the files and set ownership directly
     move_files_and_set_permissions
 fi
 
 
-# Create the PYTHON VENV
+# Create the PYTHON VENV for Cowrie
 VENV_DIR="$COWRIE_HOME/cowrie/cowrie-env"
-# Check if the virtual environment already exists
+
 if sudo [ ! -d "$VENV_DIR" ]; then
     echo "Creating a Python virtual environment in $VENV_DIR..."
-
-    # Switch to the 'cowrie' user and create a Python virtual environment
     sudo -u "$USERNAME" python3 -m venv "$VENV_DIR"
-
-    # Give 'cowrie' ownership of the virtual environment
     sudo chown -R "$USERNAME":"$USERNAME" "$VENV_DIR"
 else
     echo "Virtual environment already exists in $VENV_DIR"
 fi
 
+# Install Python dependencies to the venv
 echo "Upgrading pip and installing required Python packages..."
 sudo -u "$USERNAME" bash -c "
     source $VENV_DIR/bin/activate
@@ -107,7 +101,6 @@ sudo -u "$USERNAME" bash -c "
     python -m pip install --upgrade -r $COWRIE_HOME/cowrie/requirements.txt > /dev/null
     python -m pip install mysql-connector-python > /dev/null
 "
-
 echo "Virtual environment setup complete and dependencies installed."
 
 
@@ -125,8 +118,8 @@ echo "$DB_PASSWORD" | mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$SQL_FI
 mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME; source $SQL_FILE_PATH;" > /dev/null
 echo "Database schema imported successfully!"
 
-
-cd $GIT_ROOT/honeypot/monitoring
+# Create the venv for the monitoring app
+cd $GIT_ROOT/monitoring
 echo Creating the monitoring venv...
 python3 -m venv venv
 source venv/bin/activate

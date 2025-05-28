@@ -111,7 +111,7 @@ DB_USER='cowrie'
 DB_NAME='cowrie'
 # Execute MySQL commands as the newly created user
 echo "Importing database schema from mysql.sql..."
-read -s -p "Enter the password of the Cowrie db :" DB_PASSWORD
+read -s -p "Enter the password of the MySQL db :" DB_PASSWORD
 # Using `mysql -u cowrie -p` to import the schema
 echo "$DB_PASSWORD" | mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$SQL_FILE_PATH"
 

@@ -12,46 +12,33 @@ Before installing Cowrie, you need to modify the `config/cowrie/cowrie.cfg` file
 - MySQL password.
 - `url`: Discord Web Hook (if you don't want to use it, set `enabled` to `false`).
 
-After making these changes, you can run `scripts/init.sh`. This script will install all the required dependencies and configure Cowrie.  
-To start Cowrie, run the following:
+After making these changes, you can run `scripts/init.sh`. This script will install all the required dependencies and configure Cowrie and the monitoring app.  
+
+Before starting the monitoring app, you need to modify the `monitoring/config.py` file with :
+
+- `ha_ip` : the IP of the Home Assistant VM
+- `ha_port` : the port of the Home Assistant WEB GUI ("8123" by default)
+- `db_pswd` : the password you define during the creation of the DB
+  
+
+
+
+### To start :
+#### Cowrie
 ```
 sudo su - cowrie 
 make start
 ```
 
+#### Monitoring app
+You can start the monitoring by running the `scripts/startMonitoring.sh` script.
 
-Before starting the monitoring app, you need to modify the `monitoring/config.py` file with some information. Then, you can start the monitoring by running the `scripts/startMonitoring.sh` script.
+### To stop :
+#### Cowrie
+```
+sudo su - cowrie 
+make stop
+```
 
-## Config Folder
-
-### Cowrie
-
-#### cowrie.cfg
-
-In this file, you need to modify the following:
-
-- `backend_ssh_host`: The IP address of the VM.
-- MySQL password.
-- `url`: Discord Web Hook URL.
-
-#### userdb.txt
-
-This file is used to configure which SSH credentials are allowed by Cowrie.
-
-## Scripts
-
-### db.sh
-
-This script will install and configure the MySQL database.
-
-### init.sh
-
-This script will install Cowrie and configure it correctly. It will create a new host on the server without `sudo` privileges.
-
-### startMonitoring.sh
-
-This script starts the network monitoring process.
-
-### stopMonitoring.sh
-
-This script stops the network monitoring process.
+#### Monitoring app
+To stop the monitoring you just have to run the `scripts/stopMonitoring.sh` script.

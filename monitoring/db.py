@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import errorcode
 from config import db_pswd
+
 # SQL Query
 auth_query = ("SELECT * FROM auth WHERE session=%s")
 input_query = ("SELECT * FROM input WHERE session=%s")
@@ -23,6 +24,9 @@ class DB:
             raise Exception("Impossible to connect to the DB")
     
     def connection(self):
+        """
+        Connect to the DB 'cowrie' with the user 'cowrie' and password from 'config.py'
+        """
         try:
             self.cnx = mysql.connector.connect(user='cowrie', password=db_pswd,
                                         host='127.0.0.1',
@@ -32,15 +36,21 @@ class DB:
             print(err)
         
     def disconnect(self):
+        """
+        Disconnect from the DB
+        """
         self.cnx.close() 
     
     def exec_query(self, query, args=None):
+        """
+        Execute a SQL query with its args
+        """
         cursor = self.cnx.cursor()
-        if args == None :
+        self.cnx.commit()
+        if args is None:
             cursor.execute(query)
-        
         else:
-            cursor.execute(query, args)                       
+            cursor.execute(query, args)
         
         results = cursor.fetchall()
         cursor.close()
@@ -71,12 +81,10 @@ class DB:
         return inputs     
      
     def get_sessionId_in_ha(self, sessionId):
-        #Get ip of the session
         results = self.exec_query(session_ip_query, (sessionId,))
         for value in results:
             ip = value[0]
             print(ip)
-            #Is there this IP in HA
             results2 = self.exec_query(ha_ip_query, (ip,))
             if len(results2) == 0 : return (False, ip)
             return (True, ip)       
@@ -84,7 +92,6 @@ class DB:
     def get_sessions(self):
         results = self.exec_query(session_query)        
         sessions = []
-        # Print the results
         for sessionId, start, end, sensor, ip, termsize, client in results:
             session = {"sessionId":sessionId, "start":start, "end":end, "ip":ip}
             if self.try_auth(sessionId):
@@ -102,20 +109,22 @@ class DB:
     def get_ip_time_range(self, mn, mx):
         mint = mn.strftime('%Y-%m-%d %H:%M')
         maxt = mx.strftime('%Y-%m-%d %H:%M')
-        ips = self.exec_query(packets_ip_time_range_query, (mint,maxt))
-        result = []
-        for ip in ips:
-            result.append(ip[0]) 
-        print(result)      
-        return result
+        query_args = (mint, maxt)
+        results = self.exec_query(packets_ip_time_range_query, query_args)
+        ips = [result[0] for result in results]
+        return ips
     
     def get_packets_nbr_time_range(self, mn, mx, ip):
-        mint = mn.strftime('%Y-%m-%d %H:%M')
-        maxt = mx.strftime('%Y-%m-%d %H:%M')
-        results = self.exec_query(packets_nbr_time_range_query, (mint,maxt,ip))
-        if results[0][0] == None : res = 0
-        else : res = int(results[0][0])
-        return res
+        mint = mn.strftime('%Y-%m-%d %H:%M:%S')
+        maxt = mx.strftime('%Y-%m-%d %H:%M:%S')
+        
+        query_args = (mint, maxt, ip)
+        results = self.exec_query(packets_nbr_time_range_query, query_args)
+
+        if results and results[0][0] is not None:
+            return int(results[0][0])
+        return 0
+
     
 if __name__ == '__main__':
     pass
